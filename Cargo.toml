@@ -1,7 +1,10 @@
 [package]
 name = "gswitch"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["shevtsiv <rostykshevtsiv@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+toml = "0.4"
+serde = "1.0"
+serde_derive = "1.0"

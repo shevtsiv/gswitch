@@ -1,8 +1,16 @@
+#[macro_use]
+extern crate serde_derive;
+
+mod config;
+
 use std::process::Command;
+use std::fs::File;
 
 fn main() {
-    let new_name = "SomeName";
-    let new_email = "someEmail@example.com";
+    let config_file = File::open("settings.toml").expect("Failed to open config file!");
+    let config = config::init_config(config_file);
+    let new_name = config.get_name();
+    let new_email = config.get_email();
 
     Command::new("git")
         .args(&["config", "--global", "user.name", format!("\"{}\"", new_name).as_str()])
