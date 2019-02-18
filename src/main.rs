@@ -9,9 +9,11 @@ use std::fs::File;
 fn main() {
     let config_file = File::open("settings.toml").expect("Failed to open config file!");
     let config = config::init_config(config_file);
-    let new_name = config.get_name();
-    let new_email = config.get_email();
 
+    let input_name_mock = "shevtsiv";
+    let account = config.get_account_by_name(input_name_mock).expect("There is no account with such name!");
+    let new_name = account.get_name();
+    let new_email = account.get_email();
     Command::new("git")
         .args(&["config", "--global", "user.name", format!("\"{}\"", new_name).as_str()])
         .spawn()

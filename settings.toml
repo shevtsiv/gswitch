@@ -1,2 +1,7 @@
+[first]
 name = "shevtsiv"
 email = "rostykshevtsiv@gmail.com"
+
+[second]
+name = "someNickname"
+email = "someEmail@example.com"
