@@ -5,13 +5,23 @@ mod config;
 
 use std::process::Command;
 use std::fs::File;
+use std::env;
 
 fn main() {
     let config_file = File::open("settings.toml").expect("Failed to open config file!");
     let config = config::init_config(config_file);
-
-    let input_name_mock = "shevtsiv";
-    let account = config.get_account_by_name(input_name_mock).expect("There is no account with such name!");
+    let args: Vec<String> = env::args().collect();
+    if args.len() != 2 {
+        println!("Usage: gswitch <name>");
+        return;
+    }
+    let nickname = args.get(1).unwrap();
+    let account = config.get_account_by_name(nickname);
+    if account.is_none() {
+        println!("There is not Git account with such name!");
+        return;
+    }
+    let account = account.unwrap();
     let new_name = account.get_name();
     let new_email = account.get_email();
     Command::new("git")
