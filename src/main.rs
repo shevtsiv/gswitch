@@ -18,7 +18,7 @@ fn main() {
     let nickname = args.get(1).unwrap();
     let account = config.get_account_by_name(nickname);
     if account.is_none() {
-        println!("There is not Git account with such name!");
+        println!("There is no Git account with such name!");
         return;
     }
     let account = account.unwrap();
