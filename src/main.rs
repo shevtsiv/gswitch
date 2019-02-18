@@ -25,12 +25,12 @@ fn main() {
     let new_name = account.get_name();
     let new_email = account.get_email();
     Command::new("git")
-        .args(&["config", "--global", "user.name", format!("\"{}\"", new_name).as_str()])
+        .args(&["config", "--global", "user.name", format!("{}", new_name).as_str()])
         .spawn()
         .expect("Failed to execute 'git config --global user.name' command!");
     println!("Command 'git config --global user.name' has been executed successfully!");
     Command::new("git")
-        .args(&["config", "--global", "user.email", format!("\"{}\"", new_email).as_str()])
+        .args(&["config", "--global", "user.email", format!("{}", new_email).as_str()])
         .spawn()
         .expect("Failed to execute 'git config --global user.email' command!");
     println!("Command 'git config --global user.email' has been executed successfully!");
