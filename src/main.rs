@@ -11,12 +11,19 @@ fn main() {
     let config_file = File::open("settings.toml").expect("Failed to open config file!");
     let config = config::init_config(config_file);
     let args: Vec<String> = env::args().collect();
-    if args.len() != 2 {
-        println!("Usage: gswitch <name>");
+    if args.len() > 2 {
+        println!("Usage: ");
+        println!("gswitch <username> - Switch to Git account with name 'username'");
+        println!("gswitch            - Switch to the next Git account listed in the settings.toml");
         return;
     }
-    let nickname = args.get(1).unwrap();
-    let account = config.get_account_by_name(nickname);
+    let account = {
+        if args.len() == 1 {
+            config.get_next_after(gitutils::get_git_name().as_str())
+        } else {
+            config.get_account_by_name(args.get(1).unwrap())
+        }
+    };
     if account.is_none() {
         println!("There is no Git account with such name!");
         return;
