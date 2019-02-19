@@ -6,6 +6,7 @@ mod gitutils;
 
 use std::fs::File;
 use std::env;
+use crate::gitutils::{get_git_name, set_git_name, get_git_email, set_git_email};
 
 fn main() {
     let config_file = File::open("settings.toml").expect("Failed to open config file!");
@@ -19,7 +20,7 @@ fn main() {
     }
     let account = {
         if args.len() == 1 {
-            config.get_next_after(gitutils::get_git_name().as_str())
+            config.get_next_after(get_git_name().as_str())
         } else {
             config.get_account_by_name(args.get(1).unwrap())
         }
@@ -31,10 +32,10 @@ fn main() {
     let account = account.unwrap();
     let new_name = account.get_name();
     let new_email = account.get_email();
-    gitutils::set_git_name(new_name);
-    gitutils::set_git_email(new_email);
-    let confirm_name = gitutils::get_git_name();
-    let confirm_email = gitutils::get_git_email();
+    set_git_name(new_name);
+    set_git_email(new_email);
+    let confirm_name = get_git_name();
+    let confirm_email = get_git_email();
     println!("Your new credentials: ");
     println!("Name: {}", confirm_name);
     println!("Email: {}", confirm_email);
