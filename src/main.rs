@@ -25,13 +25,9 @@ fn main() {
     let new_name = account.get_name();
     let new_email = account.get_email();
     gitutils::set_git_name(new_name);
-    println!("Command 'git config --global user.name' has been executed successfully!");
     gitutils::set_git_email(new_email);
-    println!("Command 'git config --global user.email' has been executed successfully!");
     let confirm_name = gitutils::get_git_name();
-    println!("Command 'git config --get user.name' has been executed successfully!");
     let confirm_email = gitutils::get_git_email();
-    println!("Command 'git config --get user.email' has been executed successfully!");
     println!("Your new credentials: ");
     println!("Name: {}", confirm_name);
     println!("Email: {}", confirm_email);
