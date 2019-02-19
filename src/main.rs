@@ -2,8 +2,8 @@
 extern crate serde_derive;
 
 mod config;
+mod gitutils;
 
-use std::process::Command;
 use std::fs::File;
 use std::env;
 
@@ -24,27 +24,15 @@ fn main() {
     let account = account.unwrap();
     let new_name = account.get_name();
     let new_email = account.get_email();
-    Command::new("git")
-        .args(&["config", "--global", "user.name", format!("{}", new_name).as_str()])
-        .spawn()
-        .expect("Failed to execute 'git config --global user.name' command!");
+    gitutils::set_git_name(new_name);
     println!("Command 'git config --global user.name' has been executed successfully!");
-    Command::new("git")
-        .args(&["config", "--global", "user.email", format!("{}", new_email).as_str()])
-        .spawn()
-        .expect("Failed to execute 'git config --global user.email' command!");
+    gitutils::set_git_email(new_email);
     println!("Command 'git config --global user.email' has been executed successfully!");
-    let confirm_name = Command::new("git")
-        .args(&["config", "--get", "user.name"])
-        .output()
-        .expect("Failed to execute 'git config --get user.name' command!");
+    let confirm_name = gitutils::get_git_name();
     println!("Command 'git config --get user.name' has been executed successfully!");
-    let confirm_email = Command::new("git")
-        .args(&["config", "--get", "user.email"])
-        .output()
-        .expect("Failed to execute 'git config --get user.email' command!");
+    let confirm_email = gitutils::get_git_email();
     println!("Command 'git config --get user.email' has been executed successfully!");
     println!("Your new credentials: ");
-    println!("Name: {}", String::from_utf8_lossy(&confirm_name.stdout[..confirm_name.stdout.len() - 1]));
-    println!("Email: {}", String::from_utf8_lossy(&confirm_email.stdout));
+    println!("Name: {}", confirm_name);
+    println!("Email: {}", confirm_email);
 }
