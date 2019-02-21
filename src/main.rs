@@ -13,15 +13,18 @@ fn main() {
     let config = config::init_config(config_file);
     let args: Vec<String> = env::args().collect();
     if args.len() > 2 {
-        println!("Usage: ");
-        println!("gswitch <username> - Switch to Git account with name 'username'");
-        println!("gswitch            - Switch to the next Git account listed in the settings.toml");
+        print_help();
         return;
     }
     let account = if args.len() == 1 {
         config.get_next_after(get_git_name().as_str())
     } else {
-        config.get_account_by_name(args.get(1).unwrap())
+        let first_arg = args.get(1).unwrap();
+        if first_arg == "--help" {
+            print_help();
+            return;
+        }
+        config.get_account_by_name(first_arg)
     };
     if account.is_none() {
         println!("There is no Git account with such name!");
@@ -44,4 +47,11 @@ fn main() {
     println!("Your new credentials: ");
     println!("Name: {}", confirm_name);
     println!("Email: {}", confirm_email);
+}
+
+fn print_help() {
+    println!("Usage: ");
+    println!("gswitch <username> - Switch to Git account with name 'username'");
+    println!("gswitch            - Switch to the next Git account listed in the settings.toml");
+    println!("gswitch --help     - Print help message");
 }
