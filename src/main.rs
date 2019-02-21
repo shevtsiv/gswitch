@@ -18,12 +18,10 @@ fn main() {
         println!("gswitch            - Switch to the next Git account listed in the settings.toml");
         return;
     }
-    let account = {
-        if args.len() == 1 {
-            config.get_next_after(get_git_name().as_str())
-        } else {
-            config.get_account_by_name(args.get(1).unwrap())
-        }
+    let account = if args.len() == 1 {
+        config.get_next_after(get_git_name().as_str())
+    } else {
+        config.get_account_by_name(args.get(1).unwrap())
     };
     if account.is_none() {
         println!("There is no Git account with such name!");
