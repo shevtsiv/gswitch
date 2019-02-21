@@ -1,8 +1,8 @@
-ssh_global_path = "./ssh/ssh_global_location/"
+ssh_global_path = "./ssh/ssh_global_location"
 [[account]]
 name = "shevtsiv"
 email = "rostykshevtsiv@gmail.com"
-ssh_path = "./ssh/shevtsiv/"
+ssh_path = "./ssh/shevtsiv"
 
 [[account]]
 name = "someNickname"

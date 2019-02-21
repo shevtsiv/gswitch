@@ -37,8 +37,15 @@ impl Config {
         self.account.get(next_index)
     }
 
-    pub fn get_ssh_global_path(&self) -> &String {
-        self.ssh_global_path.as_ref().expect("There is no ssh_global_path parameter specified in the config!")
+    pub fn get_ssh_global_path(&self) -> String {
+        let path = self.ssh_global_path.as_ref()
+            .expect("There is no ssh_global_path parameter specified in the config!");
+        let last_symbol = path.chars().last().unwrap();
+        let mut new_path = path.clone();
+        if last_symbol != '/' && last_symbol != '\\' {
+            new_path.insert(path.len(), '/');
+        }
+        new_path
     }
 }
 
@@ -58,8 +65,14 @@ impl AccountSection {
         self.email.as_ref().expect("There is no email parameter specified in the config!")
     }
 
-    pub fn get_ssh_path(&self) -> &String {
-        self.ssh_path.as_ref().expect("There is no ssh_path parameter specified in the config!")
+    pub fn get_ssh_path(&self) -> String {
+        let path = self.ssh_path.as_ref().expect("There is no ssh_path parameter specified in the config!");
+        let last_symbol = path.get(path.len()..path.len()).unwrap();
+        let mut new_path = path.clone();
+        if last_symbol != "/" && last_symbol != "\\" {
+            new_path.insert(path.len(), '/');
+        }
+        new_path
     }
 }
 

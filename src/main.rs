@@ -35,8 +35,7 @@ fn main() {
     for entry in read_dir(account.get_ssh_path()).unwrap() {
         let entry = entry.unwrap();
         let from = entry.path();
-        // TODO: Rewrite this part to avoid .clone()
-        let mut to = config.get_ssh_global_path().clone();
+        let mut to = config.get_ssh_global_path();
         to.push_str(entry.file_name().to_str().unwrap());
         copy(from, to).expect("Error occurred while copying ssh keys!");
     }
