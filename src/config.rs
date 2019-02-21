@@ -5,6 +5,7 @@ use std::io::Read;
 
 #[derive(Deserialize)]
 pub struct Config {
+    ssh_global_path: Option<String>,
     account: Vec<AccountSection>,
 }
 
@@ -35,12 +36,17 @@ impl Config {
         };
         self.account.get(next_index)
     }
+
+    pub fn get_ssh_global_path(&self) -> &String {
+        self.ssh_global_path.as_ref().expect("There is no ssh_global_path parameter specified in the config!")
+    }
 }
 
 #[derive(Deserialize)]
 pub struct AccountSection {
     name: Option<String>,
     email: Option<String>,
+    ssh_path: Option<String>,
 }
 
 impl AccountSection {
@@ -50,6 +56,10 @@ impl AccountSection {
 
     pub fn get_email(&self) -> &String {
         self.email.as_ref().expect("There is no email parameter specified in the config!")
+    }
+
+    pub fn get_ssh_path(&self) -> &String {
+        self.ssh_path.as_ref().expect("There is no ssh_path parameter specified in the config!")
     }
 }
 

@@ -4,7 +4,7 @@ extern crate serde_derive;
 mod config;
 mod gitutils;
 
-use std::fs::File;
+use std::fs::{File, copy, read_dir};
 use std::env;
 use crate::gitutils::{get_git_name, set_git_name, get_git_email, set_git_email};
 
@@ -32,6 +32,14 @@ fn main() {
     let account = account.unwrap();
     let new_name = account.get_name();
     let new_email = account.get_email();
+    for entry in read_dir(account.get_ssh_path()).unwrap() {
+        let entry = entry.unwrap();
+        let from = entry.path();
+        // TODO: Rewrite this part to avoid .clone()
+        let mut to = config.get_ssh_global_path().clone();
+        to.push_str(entry.file_name().to_str().unwrap());
+        copy(from, to).expect("Error occurred while copying ssh keys!");
+    }
     set_git_name(new_name);
     set_git_email(new_email);
     let confirm_name = get_git_name();
