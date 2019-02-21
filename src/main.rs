@@ -7,10 +7,13 @@ mod gitutils;
 use std::fs::{File, copy, read_dir};
 use std::env;
 use crate::gitutils::{get_git_name, set_git_name, get_git_email, set_git_email};
+use std::io::Read;
 
 fn main() {
-    let config_file = File::open("settings.toml").expect("Failed to open config file!");
-    let config = config::init_config(config_file);
+    let mut config_file = File::open("settings.toml").expect("Failed to open config file!");
+    let mut file_content = String::new();
+    config_file.read_to_string(&mut file_content).expect("Failed to read config file content!");
+    let config = config::init_config(&file_content);
     let args: Vec<String> = env::args().collect();
     if args.len() > 2 {
         print_help();

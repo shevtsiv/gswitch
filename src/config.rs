@@ -1,15 +1,13 @@
 extern crate toml;
 
-use std::fs::File;
-use std::io::Read;
-
 #[derive(Deserialize)]
-pub struct Config {
+pub struct Config<'a> {
     ssh_global_path: Option<String>,
-    account: Vec<AccountSection>,
+    #[serde(borrow)]
+    account: Vec<AccountSection<'a>>,
 }
 
-impl Config {
+impl<'a> Config<'a> {
     pub fn get_account_by_name(&self, name: &str) -> Option<&AccountSection> {
         for account in &self.account {
             if account.get_name() == name {
@@ -50,19 +48,21 @@ impl Config {
 }
 
 #[derive(Deserialize)]
-pub struct AccountSection {
-    name: Option<String>,
-    email: Option<String>,
+pub struct AccountSection<'a> {
+    #[serde(borrow)]
+    name: &'a str,
+    #[serde(borrow)]
+    email: &'a str,
     ssh_path: Option<String>,
 }
 
-impl AccountSection {
-    pub fn get_name(&self) -> &String {
-        self.name.as_ref().expect("There is no name parameter specified in the config!")
+impl<'a> AccountSection<'a> {
+    pub fn get_name(&self) -> &str {
+        self.name
     }
 
-    pub fn get_email(&self) -> &String {
-        self.email.as_ref().expect("There is no email parameter specified in the config!")
+    pub fn get_email(&self) -> &str {
+        self.email
     }
 
     pub fn get_ssh_path(&self) -> String {
@@ -76,10 +76,8 @@ impl AccountSection {
     }
 }
 
-pub fn init_config(mut file: File) -> Config {
-    let mut file_content = String::new();
-    file.read_to_string(&mut file_content).expect("Failed to read config file content!");
-    let config: Config = toml::from_str(file_content.as_str()).expect("Error occurred while processing config file!");
+pub fn init_config(config_file_content: &str) -> Config {
+    let config: Config = toml::from_str(config_file_content).expect("Error occurred while processing config file!");
     if config.get_accounts_amount() < 2 {
         panic!("There are not enough Git accounts in the config file!");
     }
