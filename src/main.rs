@@ -34,23 +34,22 @@ fn main() {
         return;
     }
     let account = account.unwrap();
-    let new_name = account.get_name();
-    let new_email = account.get_email();
+    set_git_name(account.get_name());
+    set_git_email(account.get_email());
+
     let ssh_account_path = account.get_ssh_path();
     if ssh_account_path.is_some() {
         for entry in read_dir(ssh_account_path.unwrap()).unwrap() {
-            let entry = entry.unwrap();
-            let from = entry.path();
             let to = config.get_ssh_global_path();
             if to.is_some() {
+                let entry = entry.unwrap();
                 let mut to = to.unwrap();
                 to.push_str(entry.file_name().to_str().unwrap());
-                copy(from, to).expect("Error occurred while copying ssh keys!");
+                copy(entry.path(), to).expect("Error occurred while copying ssh keys!");
             }
         }
     }
-    set_git_name(new_name);
-    set_git_email(new_email);
+
     let confirm_name = get_git_name();
     let confirm_email = get_git_email();
     println!("Your new credentials: ");
