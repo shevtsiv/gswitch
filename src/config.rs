@@ -35,15 +35,21 @@ impl<'a> Config<'a> {
         self.account.get(next_index)
     }
 
-    pub fn get_ssh_global_path(&self) -> String {
-        let path = self.ssh_global_path.as_ref()
-            .expect("There is no ssh_global_path parameter specified in the config!");
-        let last_symbol = path.chars().last().unwrap();
-        let mut new_path = path.clone();
-        if last_symbol != '/' && last_symbol != '\\' {
-            new_path.insert(path.len(), '/');
+    pub fn get_ssh_global_path(&self) -> Option<String> {
+        let ssh_global_location = self.ssh_global_path.clone();
+        if ssh_global_location.is_none() {
+            return None;
         }
-        new_path
+        let mut ssh_global_location = ssh_global_location.unwrap();
+        if ssh_global_location.is_empty() {
+            return None;
+        }
+        let last_symbol = ssh_global_location.chars().last().unwrap();
+        if last_symbol != '/' && last_symbol != '\\' {
+            ssh_global_location.push_str("/");
+            return Some(ssh_global_location);
+        }
+        Some(ssh_global_location)
     }
 }
 
@@ -53,7 +59,8 @@ pub struct AccountSection<'a> {
     name: &'a str,
     #[serde(borrow)]
     email: &'a str,
-    ssh_path: Option<String>,
+    #[serde(borrow)]
+    ssh_path: Option<&'a str>,
 }
 
 impl<'a> AccountSection<'a> {
@@ -65,14 +72,14 @@ impl<'a> AccountSection<'a> {
         self.email
     }
 
-    pub fn get_ssh_path(&self) -> String {
-        let path = self.ssh_path.as_ref().expect("There is no ssh_path parameter specified in the config!");
-        let last_symbol = path.get(path.len()..path.len()).unwrap();
-        let mut new_path = path.clone();
-        if last_symbol != "/" && last_symbol != "\\" {
-            new_path.insert(path.len(), '/');
+    pub fn get_ssh_path(&self) -> Option<&str> {
+        if self.ssh_path.is_none() {
+            return None;
         }
-        new_path
+        if self.ssh_path.unwrap().is_empty() {
+            return None;
+        }
+        self.ssh_path
     }
 }
 
